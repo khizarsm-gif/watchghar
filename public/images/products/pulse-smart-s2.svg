@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+  <defs><radialGradient id="g" cx="50%" cy="42%" r="70%"><stop offset="0" stop-color="#2a2118"/><stop offset="1" stop-color="#0e0b08"/></radialGradient></defs>
+  <rect width="600" height="600" fill="url(#g)"/>
+  <path d="M254 20 L346 20 L352 580 L248 580 Z" fill="#161616" stroke="#ffffff" stroke-opacity="0.22" stroke-width="2"/>
+<path d="M266 40 L266 560" stroke="#ffffff" stroke-opacity="0.08" stroke-width="2" stroke-dasharray="6 8"/>
+<rect x="191.7" y="174.0" width="216.6" height="252.0" rx="42" fill="#222" stroke="#000" stroke-width="3"/>
+<rect x="199.7" y="182.0" width="200.6" height="236.0" rx="34" fill="#06121f"/>
+<text x="300" y="308" text-anchor="middle" font-family="Arial,sans-serif" font-size="58" font-weight="700" fill="#f0d58a">10:09</text>
+<text x="300" y="344" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" fill="#9aa3ad">TUE 06</text>
+<circle cx="266" cy="242" r="9" fill="none" stroke="#d4a64a" stroke-width="4"/>
+<rect x="408.3" y="286" width="12" height="40" rx="5" fill="#000"/>
+  <rect x="0" y="536" width="600" height="64" fill="#0e0b08" opacity="0.92"/>
+  <text x="300" y="566" text-anchor="middle" font-family="Georgia,serif" font-size="20" fill="#d4a64a">Pulse Smart S2</text>
+  <text x="300" y="588" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#ffffff" opacity="0.35">Demo product image</text>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+  <defs><radialGradient id="g" cx="50%" cy="42%" r="70%"><stop offset="0" stop-color="#2a2118"/><stop offset="1" stop-color="#0e0b08"/></radialGradient></defs>
+  <rect width="600" height="600" fill="url(#g)"/>
+  <g>
+  <path d="M170 150 Q300 110 430 150 L420 470 Q300 510 180 470 Z" fill="#5a3a22"/>
+  <path d="M190 170 Q300 138 410 170" stroke="#ffffff" stroke-opacity="0.18" stroke-width="3" fill="none" stroke-dasharray="8 8"/>
+  <path d="M190 450 Q300 480 410 450" stroke="#ffffff" stroke-opacity="0.18" stroke-width="3" fill="none" stroke-dasharray="8 8"/>
+  <rect x="270" y="296" width="60" height="36" rx="6" fill="none" stroke="#d4a64a" stroke-width="6"/>
+  <rect x="296" y="302" width="8" height="24" rx="3" fill="#d4a64a"/>
+  <circle cx="300" cy="200" r="5" fill="#00000066"/><circle cx="300" cy="230" r="5" fill="#00000066"/><circle cx="300" cy="360" r="5" fill="#00000066"/><circle cx="300" cy="390" r="5" fill="#00000066"/><circle cx="300" cy="420" r="5" fill="#00000066"/>
+</g>
+  <rect x="0" y="536" width="600" height="64" fill="#0e0b08" opacity="0.92"/>
+  <text x="300" y="566" text-anchor="middle" font-family="Georgia,serif" font-size="20" fill="#d4a64a">Leather Strap, Brown</text>
+  <text x="300" y="588" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#ffffff" opacity="0.35">Demo product image</text>
+</svg>

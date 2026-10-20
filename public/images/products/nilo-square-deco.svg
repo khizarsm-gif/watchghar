@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+  <defs><radialGradient id="g" cx="50%" cy="42%" r="70%"><stop offset="0" stop-color="#2a2118"/><stop offset="1" stop-color="#0e0b08"/></radialGradient></defs>
+  <rect width="600" height="600" fill="url(#g)"/>
+  <path d="M254 20 L346 20 L352 580 L248 580 Z" fill="#2a2a3e" stroke="#ffffff" stroke-opacity="0.22" stroke-width="2"/>
+<path d="M266 40 L266 560" stroke="#ffffff" stroke-opacity="0.08" stroke-width="2" stroke-dasharray="6 8"/>
+<rect x="200.55" y="200.55" width="198.9" height="198.9" rx="16" fill="#d4a64a" stroke="#8a6a22" stroke-width="3"/>
+<rect x="208.55" y="208.55" width="182.9" height="182.9" rx="8" fill="#1a1a2e"/>
+<line x1="300" y1="300" x2="256.5" y2="269.5" stroke="#f0d58a" stroke-width="7" stroke-linecap="round"/>
+<line x1="300" y1="300" x2="366.4" y2="261.6" stroke="#f0d58a" stroke-width="5" stroke-linecap="round"/>
+<circle cx="300" cy="300" r="7" fill="#f0d58a"/>
+<line x1="300.0" y1="226.8" x2="300.0" y2="240.8" stroke="#d4a64a" stroke-width="3" stroke-linecap="round"/>
+<line x1="336.6" y1="236.6" x2="333.1" y2="242.7" stroke="#d4a64a" stroke-width="3" stroke-linecap="round"/>
+<line x1="363.4" y1="263.4" x2="357.3" y2="266.9" stroke="#d4a64a" stroke-width="3" stroke-linecap="round"/>
+<line x1="373.2" y1="300.0" x2="359.2" y2="300.0" stroke="#d4a64a" stroke-width="3" stroke-linecap="round"/>
+<line x1="363.4" y1="336.6" x2="357.3" y2="333.1" stroke="#d4a64a" stroke-width="3" stroke-linecap="round"/>
+<line x1="336.6" y1="363.4" x2="333.1" y2="357.3" stroke="#d4a64a" stroke-width="3" stroke-linecap="round"/>
+<line x1="300.0" y1="373.2" x2="300.0" y2="359.2" stroke="#d4a64a" stroke-width="3" stroke-linecap="round"/>
+<line x1="263.4" y1="363.4" x2="266.9" y2="357.3" stroke="#d4a64a" stroke-width="3" stroke-linecap="round"/>
+<line x1="236.6" y1="336.6" x2="242.7" y2="333.1" stroke="#d4a64a" stroke-width="3" stroke-linecap="round"/>
+<line x1="226.8" y1="300.0" x2="240.8" y2="300.0" stroke="#d4a64a" stroke-width="3" stroke-linecap="round"/>
+<line x1="236.6" y1="263.4" x2="242.7" y2="266.9" stroke="#d4a64a" stroke-width="3" stroke-linecap="round"/>
+<line x1="263.4" y1="236.6" x2="266.9" y2="242.7" stroke="#d4a64a" stroke-width="3" stroke-linecap="round"/>
+  <rect x="0" y="536" width="600" height="64" fill="#0e0b08" opacity="0.92"/>
+  <text x="300" y="566" text-anchor="middle" font-family="Georgia,serif" font-size="20" fill="#d4a64a">Nilo Square Deco</text>
+  <text x="300" y="588" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#ffffff" opacity="0.35">Demo product image</text>
+</svg>
