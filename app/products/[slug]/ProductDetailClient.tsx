@@ -27,6 +27,8 @@ export default function ProductDetailClient({
   relatedProducts,
 }: ProductDetailClientProps) {
   const [quantity, setQuantity] = useState(1);
+  const photos = [product.image, ...(product.gallery ?? [])];
+  const [activePhoto, setActivePhoto] = useState(0);
   const { addToCart } = useCart();
   const { showToast } = useToast();
   const { isWishlisted, toggleWishlist } = useWishlist();
@@ -53,23 +55,45 @@ export default function ProductDetailClient({
       />
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
-        <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-brand-50">
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover"
-          />
-          <div className="absolute left-3 top-3 flex flex-col gap-1.5">
-            {onSale && <span className="badge bg-red-600 text-white">-{discount}%</span>}
-            {product.isDemo && <span className="badge bg-black/70 text-white">Demo Product</span>}
+        <div>
+          <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-brand-50">
+            <Image
+              key={photos[activePhoto]}
+              src={photos[activePhoto]}
+              alt={product.name}
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className={activePhoto === 0 ? "object-cover" : "object-contain"}
+            />
+            <div className="absolute left-3 top-3 flex flex-col gap-1.5">
+              {onSale && <span className="badge bg-red-600 text-white">-{discount}%</span>}
+              {product.isDemo && <span className="badge bg-black/70 text-white">Demo Product</span>}
+            </div>
+            {product.sku && (
+              <span className="absolute bottom-3 left-3 rounded bg-black/80 px-3 py-1.5 text-sm font-bold tracking-wider text-white shadow-md ring-1 ring-white/30">
+                {product.sku}
+              </span>
+            )}
           </div>
-          {product.sku && (
-            <span className="absolute bottom-3 left-3 rounded bg-black/80 px-3 py-1.5 text-sm font-bold tracking-wider text-white shadow-md ring-1 ring-white/30">
-              {product.sku}
-            </span>
+
+          {photos.length > 1 && (
+            <div className="mt-3 grid grid-cols-5 gap-2 sm:grid-cols-6">
+              {photos.map((src, i) => (
+                <button
+                  key={src}
+                  type="button"
+                  onClick={() => setActivePhoto(i)}
+                  aria-label={`Show photo ${i + 1} of ${photos.length}`}
+                  aria-current={i === activePhoto}
+                  className={`relative aspect-square overflow-hidden rounded-lg bg-brand-50 ring-2 transition-shadow ${
+                    i === activePhoto ? "ring-brand-600" : "ring-transparent hover:ring-brand-300"
+                  }`}
+                >
+                  <Image src={src} alt="" fill sizes="96px" className="object-cover" />
+                </button>
+              ))}
+            </div>
           )}
         </div>
 

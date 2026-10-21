@@ -53,7 +53,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    image: [product.image],
+    image: [product.image, ...(product.gallery ?? [])],
     description: product.description,
     sku: product.sku,
     brand: { "@type": "Brand", name: product.brand },

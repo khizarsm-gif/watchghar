@@ -6,6 +6,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
 import type { Category, Product } from "@/types";
 import ImageUpload from "../_components/ImageUpload";
+import GalleryUpload from "../_components/GalleryUpload";
 import { createProduct, updateProduct, type ActionState } from "./actions";
 
 interface ProductFormProps {
@@ -157,6 +158,15 @@ export default function ProductForm({ categories, mode, product }: ProductFormPr
           <ImageUpload
             name="image"
             defaultValue={product?.image}
+            slugHint={effectiveSlug}
+            onUploadingChange={setUploading}
+          />
+        </Section>
+
+        <Section title="More photos">
+          <GalleryUpload
+            name="gallery"
+            defaultValue={product?.gallery}
             slugHint={effectiveSlug}
             onUploadingChange={setUploading}
           />

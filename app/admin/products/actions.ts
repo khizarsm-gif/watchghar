@@ -23,6 +23,7 @@ interface ParsedFields {
   sku: string;
   featured: boolean;
   image: string;
+  gallery: string[];
 }
 
 function parseProductFields(formData: FormData): ParsedFields {
@@ -36,6 +37,7 @@ function parseProductFields(formData: FormData): ParsedFields {
   const salePrice = salePriceRaw ? Number(salePriceRaw) : null;
   const stock = Number(text("stock") || 0);
   const image = text("image");
+  const gallery = formData.getAll("gallery").map((v) => String(v).trim()).filter(Boolean);
 
   if (!name) throw new Error("Product name is required.");
   if (!slug) throw new Error("Couldn't generate a URL slug. Check the product name.");
@@ -54,6 +56,10 @@ function parseProductFields(formData: FormData): ParsedFields {
   if (image && !image.startsWith("/") && !/^https:\/\//i.test(image)) {
     throw new Error("Image must be an uploaded photo or an https:// link.");
   }
+  if (gallery.length > 8) throw new Error("You can add up to 8 extra photos.");
+  if (gallery.some((g) => !g.startsWith("/") && !/^https:\/\//i.test(g))) {
+    throw new Error("Extra photos must be uploaded photos or https:// links.");
+  }
 
   return {
     name,
@@ -68,6 +74,7 @@ function parseProductFields(formData: FormData): ParsedFields {
     sku: text("sku"),
     featured: formData.get("featured") === "on",
     image,
+    gallery,
   };
 }
 
@@ -82,6 +89,7 @@ function toRow(fields: ParsedFields) {
     price: fields.price,
     sale_price: fields.salePrice,
     image: fields.image || PLACEHOLDER_IMAGE,
+    gallery: fields.gallery,
     stock: fields.stock,
     // Article number (WGA-xx) is assigned by the database on insert and never changed by edits.
     ...(fields.sku ? { sku: fields.sku } : {}),
@@ -138,7 +146,7 @@ export async function updateProduct(
     return { error: err instanceof Error ? err.message : "Invalid input." };
   }
 
-  const { data: existing } = await supabase.from("products").select("image").eq("id", id).maybeSingle();
+  const { data: existing } = await supabase.from("products").select("image, gallery").eq("id", id).maybeSingle();
 
   // Editing a demo product turns it into a real one.
   const { error } = await supabase
@@ -153,6 +161,9 @@ export async function updateProduct(
   if (existing?.image && existing.image !== toRow(fields).image) {
     await removeStoredImage(supabase, existing.image);
   }
+  for (const old of (existing?.gallery as string[] | null) ?? []) {
+    if (!fields.gallery.includes(old)) await removeStoredImage(supabase, old);
+  }
 
   refreshStorefront();
   redirect("/admin/products?saved=product-updated");
@@ -162,7 +173,7 @@ export async function deleteProduct(id: number): Promise<{ error: string | null 
   const { supabase, error: authError } = await requireAdminAction();
   if (!supabase) return { error: authError };
 
-  const { data: existing } = await supabase.from("products").select("image").eq("id", id).maybeSingle();
+  const { data: existing } = await supabase.from("products").select("image, gallery").eq("id", id).maybeSingle();
 
   const { error } = await supabase.from("products").delete().eq("id", id);
   if (error) {
@@ -171,6 +182,7 @@ export async function deleteProduct(id: number): Promise<{ error: string | null 
   }
 
   await removeStoredImage(supabase, existing?.image);
+  for (const g of (existing?.gallery as string[] | null) ?? []) await removeStoredImage(supabase, g);
   refreshStorefront();
   return { error: null };
 }

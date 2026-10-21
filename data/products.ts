@@ -21,6 +21,7 @@ export interface ProductRow {
   price: string | number;
   sale_price: string | number | null;
   image: string;
+  gallery: string[] | null;
   stock: number;
   sku: string;
   featured: boolean;
@@ -40,6 +41,7 @@ export function mapRow(row: ProductRow): Product {
     price: Number(row.price),
     salePrice: row.sale_price != null ? Number(row.sale_price) : undefined,
     image: row.image,
+    gallery: row.gallery ?? [],
     stock: row.stock,
     sku: row.sku,
     featured: row.featured,

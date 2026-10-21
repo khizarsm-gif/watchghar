@@ -20,6 +20,8 @@ export interface Product {
   /** Present only when the product is on sale. Must be lower than `price`. */
   salePrice?: number;
   image: string;
+  /** Extra photos of the same watch, shown as thumbnails on the product page. */
+  gallery?: string[];
   stock: number;
   sku: string;
   featured: boolean;
