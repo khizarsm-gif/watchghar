@@ -141,8 +141,12 @@ export default function ProductForm({ categories, mode, product }: ProductFormPr
               <input id="stock" name="stock" type="number" min="0" step="1" defaultValue={product?.stock ?? 0} required className="input" />
             </div>
             <div>
-              <label htmlFor="sku" className="label">SKU *</label>
-              <input id="sku" name="sku" defaultValue={product?.sku} required className="input" />
+              <label htmlFor="sku" className="label">Article No.</label>
+              {mode === "edit" ? (
+                <input id="sku" name="sku" defaultValue={product?.sku} readOnly className="input bg-gray-50 text-gray-600" />
+              ) : (
+                <p className="input flex items-center bg-gray-50 text-sm text-gray-500">Assigned automatically (WGA-xx)</p>
+              )}
             </div>
           </div>
         </Section>

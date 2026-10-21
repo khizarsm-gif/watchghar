@@ -66,6 +66,11 @@ export default function ProductDetailClient({
             {onSale && <span className="badge bg-red-600 text-white">-{discount}%</span>}
             {product.isDemo && <span className="badge bg-black/70 text-white">Demo Product</span>}
           </div>
+          {product.sku && (
+            <span className="absolute bottom-3 left-3 rounded bg-white/90 px-2.5 py-1 text-sm font-semibold tracking-wide text-gray-800 shadow-sm">
+              {product.sku}
+            </span>
+          )}
         </div>
 
         <div className="flex flex-col gap-4">
@@ -85,7 +90,7 @@ export default function ProductDetailClient({
               Brand: <span className="font-medium text-gray-700">{product.brand}</span>
             </span>
             <span>
-              SKU: <span className="font-medium text-gray-700">{product.sku}</span>
+              Article No.: <span className="font-medium text-gray-700">{product.sku}</span>
             </span>
           </div>
 
@@ -109,10 +114,6 @@ export default function ProductDetailClient({
           <div>
             {outOfStock ? (
               <span className="badge bg-gray-200 text-gray-700">Out of Stock</span>
-            ) : product.stock <= 10 ? (
-              <span className="badge bg-amber-100 text-amber-700">
-                Low Stock — only {product.stock} left
-              </span>
             ) : (
               <span className="badge bg-brand-100 text-brand-700">In Stock</span>
             )}
@@ -159,7 +160,7 @@ export default function ProductDetailClient({
           <div className="flex flex-wrap gap-2">
             <a
               href={buildWhatsAppContactUrl(
-                `Hello ${businessConfig.name}, I would like to ask about ${product.name} (${product.sku}).`
+                `Hello ${businessConfig.name}, I would like to ask about ${product.name} (Article No. ${product.sku}).`
               )}
               target="_blank"
               rel="noopener noreferrer"

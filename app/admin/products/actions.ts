@@ -42,7 +42,6 @@ function parseProductFields(formData: FormData): ParsedFields {
   if (!text("brand")) throw new Error("Brand is required.");
   if (!text("category")) throw new Error("Category is required.");
   if (!text("description")) throw new Error("Description is required.");
-  if (!text("sku")) throw new Error("SKU is required.");
   if (!Number.isFinite(price) || price < 0) throw new Error("Price must be a valid number, 0 or more.");
   if (salePrice != null && (!Number.isFinite(salePrice) || salePrice < 0)) {
     throw new Error("Sale price must be a valid number, 0 or more.");
@@ -84,7 +83,8 @@ function toRow(fields: ParsedFields) {
     sale_price: fields.salePrice,
     image: fields.image || PLACEHOLDER_IMAGE,
     stock: fields.stock,
-    sku: fields.sku,
+    // Article number (WGA-xx) is assigned by the database on insert and never changed by edits.
+    ...(fields.sku ? { sku: fields.sku } : {}),
     featured: fields.featured,
   };
 }

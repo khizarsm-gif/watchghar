@@ -19,7 +19,6 @@ export default function ProductCard({ product }: { product: Product }) {
   const onSale = isOnSale(product.price, product.salePrice);
   const discount = calculateDiscountPercent(product.price, product.salePrice);
   const outOfStock = product.stock <= 0;
-  const lowStock = !outOfStock && product.stock <= 10;
   const category = getCategory(product.category);
   const wishlisted = isWishlisted(product.id);
 
@@ -65,6 +64,12 @@ export default function ProductCard({ product }: { product: Product }) {
           />
         </button>
 
+        {product.sku && (
+          <span className="absolute bottom-2 left-2 rounded bg-white/90 px-2 py-0.5 text-xs font-semibold tracking-wide text-gray-800 shadow-sm">
+            {product.sku}
+          </span>
+        )}
+
         {outOfStock && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/55">
             <span className="badge bg-black/80 text-white">Out of Stock</span>
@@ -102,12 +107,6 @@ export default function ProductCard({ product }: { product: Product }) {
             </span>
           )}
         </div>
-
-        {lowStock && (
-          <span className="text-xs font-medium text-amber-600">
-            Only {product.stock} left in stock
-          </span>
-        )}
 
         <div className="mt-auto pt-3">
           <button
