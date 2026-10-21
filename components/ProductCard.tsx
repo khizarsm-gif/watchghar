@@ -65,7 +65,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </button>
 
         {product.sku && (
-          <span className="absolute bottom-2 left-2 rounded bg-white/90 px-2 py-0.5 text-xs font-semibold tracking-wide text-gray-800 shadow-sm">
+          <span className="absolute bottom-2 left-2 rounded bg-black/80 px-2.5 py-1 text-xs font-bold tracking-wider text-white shadow-md ring-1 ring-white/30">
             {product.sku}
           </span>
         )}
@@ -90,6 +90,11 @@ export default function ProductCard({ product }: { product: Product }) {
           {product.name}
         </Link>
         <span className="text-xs text-gray-500">{product.brand}</span>
+        {product.sku && (
+          <span className="text-xs font-semibold tracking-wide text-brand-600">
+            Article No. {product.sku}
+          </span>
+        )}
 
         <div className="mt-1 flex items-center gap-2">
           {onSale ? (

@@ -67,7 +67,7 @@ export default function ProductDetailClient({
             {product.isDemo && <span className="badge bg-black/70 text-white">Demo Product</span>}
           </div>
           {product.sku && (
-            <span className="absolute bottom-3 left-3 rounded bg-white/90 px-2.5 py-1 text-sm font-semibold tracking-wide text-gray-800 shadow-sm">
+            <span className="absolute bottom-3 left-3 rounded bg-black/80 px-3 py-1.5 text-sm font-bold tracking-wider text-white shadow-md ring-1 ring-white/30">
               {product.sku}
             </span>
           )}
@@ -90,7 +90,7 @@ export default function ProductDetailClient({
               Brand: <span className="font-medium text-gray-700">{product.brand}</span>
             </span>
             <span>
-              Article No.: <span className="font-medium text-gray-700">{product.sku}</span>
+              Article No.: <span className="font-bold tracking-wide text-brand-600">{product.sku}</span>
             </span>
           </div>
 
