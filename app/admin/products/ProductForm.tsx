@@ -121,7 +121,7 @@ export default function ProductForm({ categories, mode, product }: ProductFormPr
               name="keyInfo"
               defaultValue={product?.keyInfo?.join("\n")}
               rows={3}
-              placeholder={"Pack of 20 tablets\nStore below 25°C"}
+              placeholder={"Case: Gold, round\nDial: White, crystal markers\nBracelet: Steel link"}
               className="input"
             />
           </div>
