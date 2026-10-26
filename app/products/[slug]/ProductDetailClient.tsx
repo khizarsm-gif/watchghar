@@ -3,11 +3,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart, MessageCircle, Phone, Heart, Package } from "lucide-react";
+import { ShoppingCart, MessageCircle, Phone, Heart, Package, ZoomIn, Truck } from "lucide-react";
 import type { Category, Product } from "@/types";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ProductGrid from "@/components/ProductGrid";
 import QuantitySelector from "@/components/QuantitySelector";
+import ImageLightbox from "@/components/ImageLightbox";
 import { formatPrice, isOnSale, calculateDiscountPercent } from "@/lib/utils";
 import { useCart } from "@/lib/cart-context";
 import { useToast } from "@/lib/toast-context";
@@ -19,16 +20,22 @@ interface ProductDetailClientProps {
   product: Product;
   category?: Category;
   relatedProducts: Product[];
+  /** Every colour of this watch (just this product when it has no colour group). */
+  variants: Product[];
 }
 
 export default function ProductDetailClient({
   product,
   category,
   relatedProducts,
+  variants,
 }: ProductDetailClientProps) {
   const [quantity, setQuantity] = useState(1);
   const photos = [product.image, ...(product.gallery ?? [])];
   const [activePhoto, setActivePhoto] = useState(0);
+  const [zoomOpen, setZoomOpen] = useState(false);
+  const hasColours = variants.length > 1;
+  const heading = hasColours ? product.groupName ?? product.name : product.name;
   const { addToCart } = useCart();
   const { showToast } = useToast();
   const { isWishlisted, toggleWishlist } = useWishlist();
@@ -56,7 +63,19 @@ export default function ProductDetailClient({
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
         <div>
-          <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-brand-50">
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label="Open photo to zoom"
+            onClick={() => setZoomOpen(true)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setZoomOpen(true);
+              }
+            }}
+            className="relative aspect-square w-full cursor-zoom-in overflow-hidden rounded-2xl bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
+          >
             <Image
               key={photos[activePhoto]}
               src={photos[activePhoto]}
@@ -75,7 +94,20 @@ export default function ProductDetailClient({
                 {product.sku}
               </span>
             )}
+            <span className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-full bg-black/70 px-2.5 py-1 text-xs font-medium text-white">
+              <ZoomIn className="h-3.5 w-3.5" aria-hidden="true" />
+              Click to zoom
+            </span>
           </div>
+
+          {zoomOpen && (
+            <ImageLightbox
+              images={photos}
+              startIndex={activePhoto}
+              alt={product.name}
+              onClose={() => setZoomOpen(false)}
+            />
+          )}
 
           {photos.length > 1 && (
             <div className="mt-3 grid grid-cols-5 gap-2 sm:grid-cols-6">
@@ -107,7 +139,38 @@ export default function ProductDetailClient({
             </Link>
           )}
 
-          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">{product.name}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">{heading}</h1>
+
+          {hasColours && (
+            <div>
+              <p className="mb-2 text-sm text-gray-500">
+                Colour: <span className="font-medium text-gray-700">{product.variantLabel}</span>
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {variants.map((v) => {
+                  const active = v.id === product.id;
+                  return (
+                    <Link
+                      key={v.id}
+                      href={`/products/${v.slug}`}
+                      scroll={false}
+                      aria-label={`${v.variantLabel ?? v.name}, article ${v.sku}`}
+                      aria-current={active}
+                      title={`${v.variantLabel ?? v.name} (${v.sku})`}
+                      className={`relative block h-16 w-16 overflow-hidden rounded-lg bg-brand-50 ring-2 transition-shadow ${
+                        active ? "ring-brand-600" : "ring-transparent hover:ring-brand-300"
+                      }${v.stock <= 0 ? " opacity-50" : ""}`}
+                    >
+                      <Image src={v.image} alt="" fill sizes="64px" className="object-cover" />
+                      <span className="absolute bottom-0 right-0 rounded-tl bg-black/80 px-1.5 text-[11px] font-bold uppercase text-white">
+                        {v.sku.slice(v.groupKey?.length ?? 0)}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
             <span>
@@ -142,6 +205,13 @@ export default function ProductDetailClient({
               <span className="badge bg-brand-100 text-brand-700">In Stock</span>
             )}
           </div>
+
+          {product.freeDelivery && (
+            <p className="inline-flex w-fit items-center gap-2 rounded-lg bg-green-500/10 px-3 py-2 text-sm font-medium text-green-500">
+              <Truck className="h-4 w-4" aria-hidden="true" />
+              Free delivery and a free gift box included
+            </p>
+          )}
 
           <p className="text-sm leading-relaxed text-gray-600">{product.description}</p>
 

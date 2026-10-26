@@ -8,7 +8,7 @@ import ProductGrid from "@/components/ProductGrid";
 import ProductFilters, { type FiltersState } from "@/components/ProductFilters";
 import SearchBar from "@/components/SearchBar";
 import { useCatalog } from "@/lib/catalog-context";
-import { effectivePrice } from "@/lib/utils";
+import { collapseVariants, effectivePrice, searchableText } from "@/lib/utils";
 import type { CategorySlug } from "@/types";
 
 const PAGE_SIZE = 8;
@@ -42,12 +42,7 @@ export default function ShopClient() {
 
     if (query.trim()) {
       const q = query.trim().toLowerCase();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.brand.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q)
-      );
+      result = result.filter((p) => searchableText(p).includes(q));
     }
 
     result = result.filter(
@@ -75,7 +70,8 @@ export default function ShopClient() {
         break;
     }
 
-    return sorted;
+    // One card per colour group (after filtering, so a colour that matches still shows its group).
+    return collapseVariants(sorted);
   }, [allProducts, filters, query]);
 
   const visibleProducts = filtered.slice(0, visibleCount);

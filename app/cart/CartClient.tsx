@@ -115,7 +115,7 @@ export default function CartClient() {
               <span>Delivery Fee</span>
               <span>{deliveryFee === 0 ? "Free" : formatPrice(deliveryFee)}</span>
             </div>
-            {subtotal < businessConfig.freeDeliveryThreshold && (
+            {deliveryFee > 0 && subtotal < businessConfig.freeDeliveryThreshold && (
               <p className="text-xs text-brand-600">
                 Add {formatPrice(businessConfig.freeDeliveryThreshold - subtotal)} more
                 for free delivery.

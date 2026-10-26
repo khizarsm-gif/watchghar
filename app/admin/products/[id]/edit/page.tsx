@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ExternalLink } from "lucide-react";
 import { requireAdminPage } from "@/lib/admin-auth";
-import { adminGetProduct, adminListCategories } from "@/lib/admin-data";
+import { adminGetProduct, adminListCategories, adminListColourGroups } from "@/lib/admin-data";
 import PageHeader from "../../../_components/PageHeader";
 import ProductForm from "../../ProductForm";
 
@@ -13,9 +13,10 @@ export default async function EditProductPage({ params }: { params: { id: string
   if (!Number.isInteger(id)) notFound();
 
   const supabase = await requireAdminPage();
-  const [product, categories] = await Promise.all([
+  const [product, categories, groups] = await Promise.all([
     adminGetProduct(supabase, id),
     adminListCategories(supabase),
+    adminListColourGroups(supabase),
   ]);
   if (!product) notFound();
 
@@ -31,7 +32,7 @@ export default async function EditProductPage({ params }: { params: { id: string
           </Link>
         }
       />
-      <ProductForm categories={categories} mode="edit" product={product} />
+      <ProductForm categories={categories} groups={groups} mode="edit" product={product} />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import ProductGrid from "@/components/ProductGrid";
 import { getCategories } from "@/data/categories";
 import { getAllProducts } from "@/data/products";
 import { businessConfig } from "@/config/business";
+import { collapseVariants } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: `${businessConfig.name} | Premium Watches in ${businessConfig.city}`,
@@ -33,7 +34,7 @@ export default async function HomePage() {
   const { allProducts, categories } = await loadHomeData();
   const featuredProducts = allProducts.filter((p) => p.featured);
   const hasDemoProducts = featuredProducts.some((p) => p.isDemo);
-  const countByCategory = allProducts.reduce<Record<string, number>>((acc, p) => {
+  const countByCategory = collapseVariants(allProducts).reduce<Record<string, number>>((acc, p) => {
     acc[p.category] = (acc[p.category] ?? 0) + 1;
     return acc;
   }, {});

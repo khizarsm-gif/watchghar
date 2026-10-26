@@ -43,3 +43,29 @@ export function classNames(
 ): string {
   return classes.filter(Boolean).join(" ");
 }
+
+/**
+ * One card per colour group: keeps the first colour of each group and every
+ * watch that is not part of a group. Order is preserved.
+ */
+export function collapseVariants<T extends { groupKey?: string }>(products: T[]): T[] {
+  const seen = new Set<string>();
+  return products.filter((p) => {
+    if (!p.groupKey) return true;
+    if (seen.has(p.groupKey)) return false;
+    seen.add(p.groupKey);
+    return true;
+  });
+}
+
+/** Text used when searching the catalog: name, brand, category, article number and colour. */
+export function searchableText(p: {
+  name: string;
+  brand: string;
+  category: string;
+  sku: string;
+  groupName?: string;
+  variantLabel?: string;
+}): string {
+  return [p.name, p.groupName, p.variantLabel, p.brand, p.category, p.sku].filter(Boolean).join(" ").toLowerCase();
+}

@@ -14,13 +14,23 @@ export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
   const { isWishlisted, toggleWishlist } = useWishlist();
   const { showToast } = useToast();
-  const { getCategory } = useCatalog();
+  const { getCategory, products } = useCatalog();
 
   const onSale = isOnSale(product.price, product.salePrice);
   const discount = calculateDiscountPercent(product.price, product.salePrice);
-  const outOfStock = product.stock <= 0;
   const category = getCategory(product.category);
   const wishlisted = isWishlisted(product.id);
+  // Colour groups show as one card: model name, group article number and the number of colours.
+  const colourCount = product.groupKey
+    ? products.filter((p) => p.groupKey === product.groupKey).length
+    : 0;
+  const isGroup = colourCount > 1;
+  const title = isGroup ? product.groupName ?? product.name : product.name;
+  const articleLabel = isGroup ? product.groupKey : product.sku;
+  // A colour group is only "out of stock" when every colour is.
+  const outOfStock = isGroup
+    ? products.filter((p) => p.groupKey === product.groupKey).every((p) => p.stock <= 0)
+    : product.stock <= 0;
 
   const handleAddToCart = () => {
     addToCart(product, 1);
@@ -33,7 +43,7 @@ export default function ProductCard({ product }: { product: Product }) {
         <Link href={`/products/${product.slug}`} className="block h-full w-full">
           <Image
             src={product.image}
-            alt={product.name}
+            alt={title}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="object-cover transition-transform duration-200 group-hover:scale-105"
@@ -64,9 +74,9 @@ export default function ProductCard({ product }: { product: Product }) {
           />
         </button>
 
-        {product.sku && (
+        {articleLabel && (
           <span className="absolute bottom-2 left-2 rounded bg-black/80 px-2.5 py-1 text-xs font-bold tracking-wider text-white shadow-md ring-1 ring-white/30">
-            {product.sku}
+            {articleLabel}
           </span>
         )}
 
@@ -87,13 +97,16 @@ export default function ProductCard({ product }: { product: Product }) {
           href={`/products/${product.slug}`}
           className="line-clamp-2 text-sm font-semibold text-gray-900 hover:text-brand-700 sm:text-base"
         >
-          {product.name}
+          {title}
         </Link>
         <span className="text-xs text-gray-500">{product.brand}</span>
         {product.sku && (
           <span className="text-xs font-semibold tracking-wide text-brand-600">
-            Article No. {product.sku}
+            Article No. {articleLabel}
           </span>
+        )}
+        {isGroup && (
+          <span className="text-xs font-medium text-gray-700">{colourCount} colours available</span>
         )}
 
         <div className="mt-1 flex items-center gap-2">
@@ -113,16 +126,29 @@ export default function ProductCard({ product }: { product: Product }) {
           )}
         </div>
 
+        {product.freeDelivery && (
+          <span className="text-xs font-semibold text-green-500">Free delivery + free box</span>
+        )}
+
         <div className="mt-auto pt-3">
-          <button
-            type="button"
-            onClick={handleAddToCart}
-            disabled={outOfStock}
-            className="btn-primary w-full !py-2 text-xs sm:text-sm"
-          >
-            <ShoppingCart className="h-4 w-4" aria-hidden="true" />
-            {outOfStock ? "Out of Stock" : "Add to Cart"}
-          </button>
+          {isGroup ? (
+            <Link
+              href={`/products/${product.slug}`}
+              className="btn-primary w-full !py-2 text-xs sm:text-sm"
+            >
+              Choose colour
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              disabled={outOfStock}
+              className="btn-primary w-full !py-2 text-xs sm:text-sm"
+            >
+              <ShoppingCart className="h-4 w-4" aria-hidden="true" />
+              {outOfStock ? "Out of Stock" : "Add to Cart"}
+            </button>
+          )}
         </div>
       </div>
     </div>

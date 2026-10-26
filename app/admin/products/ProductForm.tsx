@@ -11,6 +11,8 @@ import { createProduct, updateProduct, type ActionState } from "./actions";
 
 interface ProductFormProps {
   categories: Category[];
+  /** Existing colour groups (for adding another colour to a watch). */
+  groups: { key: string; name: string; count: number }[];
   mode: "create" | "edit";
   product?: Product;
 }
@@ -40,13 +42,14 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-export default function ProductForm({ categories, mode, product }: ProductFormProps) {
+export default function ProductForm({ categories, groups, mode, product }: ProductFormProps) {
   const action = mode === "edit" && product ? updateProduct.bind(null, product.id) : createProduct;
   const [state, formAction] = useFormState(action, initialState);
   const [uploading, setUploading] = useState(false);
   const [name, setName] = useState(product?.name ?? "");
   const [slug, setSlug] = useState(product?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
+  const [groupChoice, setGroupChoice] = useState("");
 
   const effectiveSlug = slugTouched ? slug : slugify(name);
 
@@ -151,6 +154,63 @@ export default function ProductForm({ categories, mode, product }: ProductFormPr
             </div>
           </div>
         </Section>
+
+        <Section title="Colour options">
+          {mode === "create" ? (
+            <>
+              <div>
+                <label htmlFor="groupKey" className="label">This watch is</label>
+                <select
+                  id="groupKey"
+                  name="groupKey"
+                  value={groupChoice}
+                  onChange={(e) => setGroupChoice(e.target.value)}
+                  className="input"
+                >
+                  <option value="">A single watch (no colour options)</option>
+                  <option value="__new__">The first colour of a new watch with colour options</option>
+                  {groups.map((g) => (
+                    <option key={g.key} value={g.key}>
+                      Another colour of {g.key}: {g.name} ({g.count} so far)
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-1 text-xs text-gray-500">
+                  Colours of the same watch share one card in the shop. Their article numbers get letters, for example WGA-48a, WGA-48b.
+                </p>
+              </div>
+              {groupChoice === "__new__" && (
+                <div>
+                  <label htmlFor="groupName" className="label">Watch name (shared by all colours) *</label>
+                  <input id="groupName" name="groupName" placeholder="FTTPON Quartz Date Watch" required className="input" />
+                </div>
+              )}
+              {groupChoice !== "" && (
+                <div>
+                  <label htmlFor="variantLabel" className="label">Colour name *</label>
+                  <input id="variantLabel" name="variantLabel" placeholder="Silver with Blue Dial" required className="input" />
+                </div>
+              )}
+            </>
+          ) : product?.groupKey ? (
+            <>
+              <p className="text-sm text-gray-600">
+                Part of colour group <span className="font-semibold">{product.groupKey}</span>. This colour is{" "}
+                <span className="font-semibold">{product.sku}</span>.
+              </p>
+              <div>
+                <label htmlFor="groupName" className="label">Watch name (shared by all colours)</label>
+                <input id="groupName" name="groupName" defaultValue={product.groupName} className="input" />
+              </div>
+              <div>
+                <label htmlFor="variantLabel" className="label">Colour name</label>
+                <input id="variantLabel" name="variantLabel" defaultValue={product.variantLabel} className="input" />
+              </div>
+            </>
+          ) : (
+            <p className="text-sm text-gray-600">This is a single watch (no colour options).</p>
+          )}
+        </Section>
       </div>
 
       <div className="space-y-6">
@@ -170,6 +230,16 @@ export default function ProductForm({ categories, mode, product }: ProductFormPr
             slugHint={effectiveSlug}
             onUploadingChange={setUploading}
           />
+        </Section>
+
+        <Section title="Delivery">
+          <label className="flex items-start gap-3 text-sm text-gray-700">
+            <input type="checkbox" name="freeDelivery" defaultChecked={product?.freeDelivery} className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-brand-600" />
+            <span>
+              <span className="font-medium text-gray-900">Free delivery</span>
+              <span className="block text-xs text-gray-500">An order that contains this watch ships free.</span>
+            </span>
+          </label>
         </Section>
 
         <Section title="Visibility">

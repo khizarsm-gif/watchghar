@@ -23,7 +23,16 @@ export interface Product {
   /** Extra photos of the same watch, shown as thumbnails on the product page. */
   gallery?: string[];
   stock: number;
+  /** Article number, for example WGA-12 (or WGA-48c for one colour of a group). */
   sku: string;
+  /** Article number shared by every colour of one watch (for example WGA-48). */
+  groupKey?: string;
+  /** Model name used for the shop card and product page of a colour group. */
+  groupName?: string;
+  /** Colour name of this option, for example "Silver with Blue Dial". */
+  variantLabel?: string;
+  /** Orders that contain this watch get free delivery. */
+  freeDelivery: boolean;
   featured: boolean;
   /** ISO date string — used for "Newest" sort. */
   createdAt: string;

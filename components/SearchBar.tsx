@@ -6,8 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Search, X } from "lucide-react";
 import { useCatalog } from "@/lib/catalog-context";
-import { formatPrice } from "@/lib/utils";
-import { classNames } from "@/lib/utils";
+import { classNames, collapseVariants, formatPrice, searchableText } from "@/lib/utils";
 
 interface SearchBarProps {
   className?: string;
@@ -29,14 +28,7 @@ export default function SearchBar({ className, autoFocus, onNavigate }: SearchBa
   const { products } = useCatalog();
   const q = query.trim().toLowerCase();
   const results = q
-    ? products
-        .filter(
-          (p) =>
-            p.name.toLowerCase().includes(q) ||
-            p.brand.toLowerCase().includes(q) ||
-            p.category.toLowerCase().includes(q)
-        )
-        .slice(0, 5)
+    ? collapseVariants(products.filter((p) => searchableText(p).includes(q))).slice(0, 5)
     : [];
   const showDropdown = isFocused && query.trim().length > 0;
 
@@ -116,7 +108,7 @@ export default function SearchBar({ className, autoFocus, onNavigate }: SearchBa
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-medium text-gray-900">
-                        {product.name}
+                        {product.groupKey ? product.groupName ?? product.name : product.name}
                       </span>
                       <span className="block text-xs text-gray-500">{product.brand}</span>
                     </span>

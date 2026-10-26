@@ -51,3 +51,23 @@ export async function adminGetCategory(
 }
 
 export const LOW_STOCK_THRESHOLD = 5;
+
+/** Colour groups that already exist (one entry per group), for the "colour of an existing watch" picker. */
+export async function adminListColourGroups(
+  supabase: ServerSupabase
+): Promise<{ key: string; name: string; count: number }[]> {
+  const { data, error } = await supabase
+    .from("products")
+    .select("group_key, group_name")
+    .not("group_key", "is", null)
+    .order("group_key", { ascending: true });
+  if (error) throw new Error(`Could not load colour groups: ${error.message}`);
+  const groups = new Map<string, { key: string; name: string; count: number }>();
+  for (const row of data ?? []) {
+    const key = row.group_key as string;
+    const existing = groups.get(key);
+    if (existing) existing.count += 1;
+    else groups.set(key, { key, name: (row.group_name as string) || key, count: 1 });
+  }
+  return Array.from(groups.values());
+}

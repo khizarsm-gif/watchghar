@@ -1,6 +1,7 @@
 import type { Product } from "@/types";
 import ProductCard from "@/components/ProductCard";
 import { PackageSearch } from "lucide-react";
+import { collapseVariants } from "@/lib/utils";
 
 interface ProductGridProps {
   products: Product[];
@@ -11,6 +12,7 @@ export default function ProductGrid({
   products,
   emptyMessage = "No products found. Try adjusting your search or filters.",
 }: ProductGridProps) {
+  products = collapseVariants(products);
   if (products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-gray-300 bg-gray-50 py-16 text-center">

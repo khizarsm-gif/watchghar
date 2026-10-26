@@ -24,6 +24,11 @@ interface ParsedFields {
   featured: boolean;
   image: string;
   gallery: string[];
+  freeDelivery: boolean;
+  /** "" (single watch), "__new__" (first colour of a new group) or an existing group key. Only used on create. */
+  groupKey: string;
+  groupName: string;
+  variantLabel: string;
 }
 
 function parseProductFields(formData: FormData): ParsedFields {
@@ -56,6 +61,9 @@ function parseProductFields(formData: FormData): ParsedFields {
   if (image && !image.startsWith("/") && !/^https:\/\//i.test(image)) {
     throw new Error("Image must be an uploaded photo or an https:// link.");
   }
+  const groupKey = text("groupKey");
+  if (groupKey === "__new__" && !text("groupName")) throw new Error("Give the watch a name that all its colours share.");
+  if (groupKey && !text("variantLabel")) throw new Error("Colour name is required for a colour option.");
   if (gallery.length > 8) throw new Error("You can add up to 8 extra photos.");
   if (gallery.some((g) => !g.startsWith("/") && !/^https:\/\//i.test(g))) {
     throw new Error("Extra photos must be uploaded photos or https:// links.");
@@ -75,6 +83,10 @@ function parseProductFields(formData: FormData): ParsedFields {
     featured: formData.get("featured") === "on",
     image,
     gallery,
+    freeDelivery: formData.get("freeDelivery") === "on",
+    groupKey,
+    groupName: text("groupName"),
+    variantLabel: text("variantLabel"),
   };
 }
 
@@ -90,6 +102,7 @@ function toRow(fields: ParsedFields) {
     sale_price: fields.salePrice,
     image: fields.image || PLACEHOLDER_IMAGE,
     gallery: fields.gallery,
+    free_delivery: fields.freeDelivery,
     stock: fields.stock,
     // Article number (WGA-xx) is assigned by the database on insert and never changed by edits.
     ...(fields.sku ? { sku: fields.sku } : {}),
@@ -121,7 +134,26 @@ export async function createProduct(_prev: ActionState, formData: FormData): Pro
     return { error: err instanceof Error ? err.message : "Invalid input." };
   }
 
-  const { error } = await supabase.from("products").insert({ ...toRow(fields), is_demo: false });
+  // Colour groups: an existing group shares its model name; a new group uses the name typed in.
+  let groupName: string | null = fields.groupName || null;
+  if (fields.groupKey && fields.groupKey !== "__new__") {
+    const { data: sibling } = await supabase
+      .from("products")
+      .select("group_name")
+      .eq("group_key", fields.groupKey)
+      .limit(1)
+      .maybeSingle();
+    if (!sibling) return { error: "That colour group no longer exists. Pick another or add this as a single watch." };
+    groupName = (sibling.group_name as string | null) ?? null;
+  }
+
+  const { error } = await supabase.from("products").insert({
+    ...toRow(fields),
+    group_key: fields.groupKey || null,
+    group_name: fields.groupKey ? groupName : null,
+    variant_label: fields.groupKey ? fields.variantLabel : null,
+    is_demo: false,
+  });
   if (error) {
     console.error("[admin] createProduct:", error.message);
     return { error: friendlyDbError(error.message) };
@@ -146,16 +178,29 @@ export async function updateProduct(
     return { error: err instanceof Error ? err.message : "Invalid input." };
   }
 
-  const { data: existing } = await supabase.from("products").select("image, gallery").eq("id", id).maybeSingle();
+  const { data: existing } = await supabase
+    .from("products")
+    .select("image, gallery, group_key")
+    .eq("id", id)
+    .maybeSingle();
 
   // Editing a demo product turns it into a real one.
   const { error } = await supabase
     .from("products")
-    .update({ ...toRow(fields), is_demo: false })
+    .update({
+      ...toRow(fields),
+      // Colour name can be edited; the group itself and the article number never change here.
+      ...(existing?.group_key ? { variant_label: fields.variantLabel || null } : {}),
+      is_demo: false,
+    })
     .eq("id", id);
   if (error) {
     console.error("[admin] updateProduct:", error.message);
     return { error: friendlyDbError(error.message) };
+  }
+  // The model name is shared by every colour in the group.
+  if (existing?.group_key && fields.groupName) {
+    await supabase.from("products").update({ group_name: fields.groupName }).eq("group_key", existing.group_key);
   }
 
   if (existing?.image && existing.image !== toRow(fields).image) {

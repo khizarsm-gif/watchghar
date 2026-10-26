@@ -130,10 +130,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const deliveryFee = useMemo(() => {
     if (lines.length === 0) return 0;
+    // Same rule as create_order in the database: free delivery for big orders or when any watch has it.
+    if (lines.some((l) => l.product.freeDelivery)) return 0;
     return subtotal >= businessConfig.freeDeliveryThreshold
       ? 0
       : businessConfig.deliveryFee;
-  }, [subtotal, lines.length]);
+  }, [subtotal, lines]);
 
   const total = subtotal + deliveryFee;
 

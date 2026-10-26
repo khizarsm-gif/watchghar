@@ -1,7 +1,7 @@
 import { siteUrl } from "@/lib/site-url";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getAllProducts, getProductBySlug, getRelatedProducts } from "@/data/products";
+import { getAllProducts, getProductBySlug, getProductsByGroup, getRelatedProducts } from "@/data/products";
 import { getCategoryBySlug } from "@/data/categories";
 import { businessConfig } from "@/config/business";
 import { effectivePrice } from "@/lib/utils";
@@ -44,9 +44,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const product = await getProductBySlug(params.slug);
   if (!product) notFound();
 
-  const [category, relatedProducts] = await Promise.all([
+  const [category, relatedProducts, variants] = await Promise.all([
     getCategoryBySlug(product.category),
     getRelatedProducts(product),
+    product.groupKey ? getProductsByGroup(product.groupKey) : Promise.resolve([product]),
   ]);
 
   const jsonLd = {
@@ -78,7 +79,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <ProductDetailClient product={product} category={category} relatedProducts={relatedProducts} />
+      <ProductDetailClient
+        key={product.id}
+        product={product}
+        category={category}
+        relatedProducts={relatedProducts}
+        variants={variants}
+      />
     </>
   );
 }

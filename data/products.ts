@@ -24,6 +24,10 @@ export interface ProductRow {
   gallery: string[] | null;
   stock: number;
   sku: string;
+  group_key: string | null;
+  group_name: string | null;
+  variant_label: string | null;
+  free_delivery: boolean;
   featured: boolean;
   created_at: string;
   is_demo: boolean;
@@ -44,6 +48,10 @@ export function mapRow(row: ProductRow): Product {
     gallery: row.gallery ?? [],
     stock: row.stock,
     sku: row.sku,
+    groupKey: row.group_key ?? undefined,
+    groupName: row.group_name ?? undefined,
+    variantLabel: row.variant_label ?? undefined,
+    freeDelivery: row.free_delivery ?? false,
     featured: row.featured,
     createdAt: row.created_at,
     isDemo: row.is_demo,
@@ -85,6 +93,19 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
   return data ? mapRow(data as ProductRow) : undefined;
 }
 
+/** All colours of one watch (same group), in article-letter order: WGA-48a, 48b, ... */
+export async function getProductsByGroup(groupKey: string): Promise<Product[]> {
+  const supabase = getSupabaseClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("group_key", groupKey)
+    .order("sku", { ascending: true });
+
+  if (error) throw new Error(`getProductsByGroup: ${error.message}`);
+  return (data as ProductRow[]).map(mapRow);
+}
+
 export async function getProductsByCategory(category: string): Promise<Product[]> {
   const supabase = getSupabaseClient();
   const { data, error } = await supabase
@@ -117,10 +138,22 @@ export async function getRelatedProducts(product: Product, limit = 4): Promise<P
     .eq("category", product.category)
     .neq("id", product.id)
     .order("id", { ascending: true })
-    .limit(limit);
+    .limit(limit * 6);
 
   if (error) throw new Error(`getRelatedProducts: ${error.message}`);
-  return (data as ProductRow[]).map(mapRow);
+  // One card per colour group, and never the colour group the shopper is already looking at.
+  const seen = new Set<string>(product.groupKey ? [product.groupKey] : []);
+  const related: Product[] = [];
+  for (const row of data as ProductRow[]) {
+    const item = mapRow(row);
+    if (item.groupKey) {
+      if (seen.has(item.groupKey)) continue;
+      seen.add(item.groupKey);
+    }
+    related.push(item);
+    if (related.length >= limit) break;
+  }
+  return related;
 }
 
 /**
