@@ -45,24 +45,15 @@ export default async function HomePage() {
       <TrustBadges />
 
       <section id="categories" className="container-page py-14 sm:py-16">
-        <div className="mb-8 flex items-end justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-              Shop by Category
-            </h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Find the watch that suits your wrist and your style.
-            </p>
-          </div>
-          <Link
-            href="/shop"
-            className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-brand-700 hover:underline sm:flex"
-          >
-            View All
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
+        <div className="mb-10 text-center">
+          <span className="eyebrow">Collections</span>
+          <h2 className="mt-2 text-4xl font-semibold text-gray-900 sm:text-5xl">Shop by category</h2>
+          <div className="gold-rule mt-4" />
+          <p className="mt-4 text-sm text-gray-500">
+            Find the watch that suits your wrist and your style.
+          </p>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-6 [&>*]:w-[calc(50%-0.375rem)] md:[&>*]:w-56 lg:[&>*]:w-64">
           {categories.map((category) => (
             <CategoryCard
               key={category.slug}
@@ -73,53 +64,49 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-brand-50/60 py-14 sm:py-16">
+      <section className="bg-brand-50/70 py-14 sm:py-20">
         <div className="container-page">
-          <div className="mb-8 flex items-end justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-                Featured Products
-              </h2>
-              <p className="mt-1 text-sm text-gray-500">
-                Hand-picked favorites from our collection.
-                {hasDemoProducts && (
-                  <span className="font-medium text-brand-700">
-                    {" "}(Demo products, replace with real inventory)
-                  </span>
-                )}
-              </p>
-            </div>
-            <Link
-              href="/shop"
-              className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-brand-700 hover:underline sm:flex"
-            >
-              View All
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
+          <div className="mb-10 text-center">
+            <span className="eyebrow">Our selection</span>
+            <h2 className="mt-2 text-4xl font-semibold text-gray-900 sm:text-5xl">Featured watches</h2>
+            <div className="gold-rule mt-4" />
+            <p className="mt-4 text-sm text-gray-500">
+              Hand-picked favourites from our collection.
+              {hasDemoProducts && (
+                <span className="font-medium text-brand-700">
+                  {" "}(Demo products, replace with real inventory)
+                </span>
+              )}
+            </p>
           </div>
           <ProductGrid products={featuredProducts} />
-          <div className="mt-8 flex justify-center sm:hidden">
-            <Link href="/shop" className="btn-secondary">
-              View All Watches
+          <div className="mt-10 flex justify-center">
+            <Link href="/shop" className="btn-secondary !px-8 uppercase tracking-widest">
+              View all watches
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </div>
         </div>
       </section>
 
       <section className="container-page py-14 sm:py-16">
-        <div className="card flex flex-col items-center gap-4 p-8 text-center sm:p-12">
-          <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+        <div className="flex flex-col items-center gap-4 rounded-3xl bg-brand-950 p-10 text-center shadow-card-hover ring-1 ring-brand-600/40 sm:p-14">
+          <span className="eyebrow !text-brand-400">Personal service</span>
+          <h2 className="text-3xl font-semibold text-white sm:text-5xl">
             Need help choosing the right watch?
           </h2>
-          <p className="max-w-xl text-sm text-gray-600 sm:text-base">
+          <p className="max-w-xl text-sm text-brand-300 sm:text-base">
             Our team is ready to help over phone or WhatsApp, from
             sizing and straps to availability and delivery.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/contact" className="btn-primary">
+            <Link href="/contact" className="btn-primary uppercase tracking-widest">
               Contact Us
             </Link>
-            <a href={`tel:${businessConfig.phoneRaw}`} className="btn-secondary">
+            <a
+              href={`tel:${businessConfig.phoneRaw}`}
+              className="btn-secondary !text-brand-300 !ring-brand-400/60 hover:!bg-white/10"
+            >
               Call {businessConfig.phone}
             </a>
           </div>

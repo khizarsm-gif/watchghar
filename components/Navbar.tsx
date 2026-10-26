@@ -22,18 +22,21 @@ export default function Navbar() {
   const { itemCount, openDrawer } = useCart();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-gray-100 bg-surface/95 backdrop-blur">
-      <div className="container-page flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="flex shrink-0 items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-ink">
+    <header className="sticky top-0 z-40 border-b border-brand-200/60 bg-surface/95 backdrop-blur">
+      <div className="bg-brand-950 px-4 py-1.5 text-center text-[10px] font-medium uppercase tracking-[0.12em] text-brand-300 sm:text-[11px] sm:tracking-[0.2em]">
+        Free delivery &amp; free gift box on every watch
+      </div>
+      <div className="container-page flex h-[72px] items-center justify-between gap-4">
+        <Link href="/" className="flex shrink-0 items-center gap-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-b from-brand-500 to-brand-700 text-white shadow-sm ring-2 ring-brand-200">
             <Watch className="h-5 w-5" aria-hidden="true" />
           </span>
-          <span className="flex flex-col leading-tight">
-            <span className="font-display text-base font-semibold tracking-wide text-gray-900 sm:text-xl">
+          <span className="flex flex-col leading-none">
+            <span className="font-display text-xl font-bold uppercase tracking-[0.18em] text-gray-900 sm:text-2xl">
               {businessConfig.name}
             </span>
-            <span className="hidden text-[11px] text-gray-500 sm:block">
-              {businessConfig.tagline}
+            <span className="mt-1 hidden text-[10px] font-medium uppercase tracking-[0.3em] text-brand-700 sm:block">
+              Fine watches &middot; {businessConfig.city}
             </span>
           </span>
         </Link>
@@ -46,7 +49,7 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-gray-700 transition-colors hover:text-brand-700"
+              className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-700 transition-colors hover:text-brand-700"
             >
               {link.label}
             </Link>
@@ -116,7 +119,7 @@ export default function Navbar() {
       </div>
 
       {mobileSearchOpen && (
-        <div className="border-t border-gray-100 px-4 py-3 md:hidden">
+        <div className="border-t border-brand-200/50 px-4 py-3 md:hidden">
           <SearchBar autoFocus onNavigate={() => setMobileSearchOpen(false)} />
         </div>
       )}
@@ -124,7 +127,7 @@ export default function Navbar() {
       {mobileOpen && (
         <nav
           aria-label="Mobile navigation"
-          className="flex flex-col gap-1 border-t border-gray-100 px-4 py-3 md:hidden"
+          className="flex flex-col gap-1 border-t border-brand-200/50 px-4 py-3 md:hidden"
         >
           {navLinks.map((link) => (
             <Link

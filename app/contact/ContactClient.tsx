@@ -132,7 +132,7 @@ export default function ContactClient() {
               />
             ) : (
               <div className="flex h-64 flex-col items-center justify-center gap-2 bg-brand-50 text-center text-sm text-gray-500">
-                <MapPin className="h-8 w-8 text-brand-300" aria-hidden="true" />
+                <MapPin className="h-8 w-8 text-brand-500" aria-hidden="true" />
                 <p className="max-w-xs px-4">
                   Map preview placeholder — add a Google Maps embed URL in{" "}
                   <code className="rounded bg-surface px-1 py-0.5">config/business.ts</code>{" "}

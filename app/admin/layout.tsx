@@ -21,11 +21,11 @@ export const metadata: Metadata = {
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const { user, isAdmin, role, displayName, mustChangePassword } = await getAdminSession();
 
-  if (!user) return <>{children}</>;
+  if (!user) return <div className="theme-dark min-h-screen bg-page">{children}</div>;
 
   if (!isAdmin) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+      <div className="theme-dark flex min-h-screen items-center justify-center bg-gray-50 px-4">
         <div className="card w-full max-w-md p-8 text-center">
           <ShieldAlert className="mx-auto mb-3 h-10 w-10 text-amber-500" aria-hidden="true" />
           <h1 className="text-lg font-bold text-gray-900">Not authorized</h1>
@@ -45,13 +45,15 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   }
 
   return (
-    <AdminShell
-      email={user.email ?? ""}
-      name={displayName}
-      role={role ?? "purchaser"}
-      mustChangePassword={mustChangePassword}
-    >
-      {children}
-    </AdminShell>
+    <div className="theme-dark min-h-screen bg-page">
+      <AdminShell
+        email={user.email ?? ""}
+        name={displayName}
+        role={role ?? "purchaser"}
+        mustChangePassword={mustChangePassword}
+      >
+        {children}
+      </AdminShell>
+    </div>
   );
 }

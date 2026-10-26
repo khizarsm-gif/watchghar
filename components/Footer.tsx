@@ -8,14 +8,14 @@ export default function Footer({ categories }: { categories: Category[] }) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-gray-100 bg-brand-950 text-brand-300">
+    <footer className="mt-8 border-t-2 border-brand-600 bg-brand-950 text-brand-300">
       <div className="container-page grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-3">
           <Link href="/" className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-ink">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-b from-brand-500 to-brand-700 text-white ring-2 ring-brand-300/40">
               <Watch className="h-5 w-5" aria-hidden="true" />
             </span>
-            <span className="font-display text-xl font-semibold tracking-wide text-white">{businessConfig.name}</span>
+            <span className="font-display text-2xl font-bold uppercase tracking-[0.18em] text-white">{businessConfig.name}</span>
           </Link>
           <p className="text-sm text-brand-300">
             Men&apos;s, women&apos;s and smart watches, delivered to your door.
@@ -58,7 +58,7 @@ export default function Footer({ categories }: { categories: Category[] }) {
         </div>
 
         <div>
-          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-white">
+          <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">
             Quick Links
           </h3>
           <ul className="flex flex-col gap-2 text-sm text-brand-300">
@@ -72,7 +72,7 @@ export default function Footer({ categories }: { categories: Category[] }) {
         </div>
 
         <div>
-          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-white">
+          <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">
             Categories
           </h3>
           <ul className="flex flex-col gap-2 text-sm text-brand-300">
@@ -87,7 +87,7 @@ export default function Footer({ categories }: { categories: Category[] }) {
         </div>
 
         <div>
-          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-white">
+          <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-brand-400">
             Contact Us
           </h3>
           <ul className="flex flex-col gap-3 text-sm text-brand-300">

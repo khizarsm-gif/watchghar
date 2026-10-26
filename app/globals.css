@@ -2,20 +2,122 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Palette (channels, so Tailwind opacity modifiers work). Light is the storefront; .theme-dark is the admin. */
+:root {
+  --brand-50: 249 243 227;
+  --brand-100: 242 230 196;
+  --brand-200: 228 208 152;
+  --brand-300: 230 212 154;
+  --brand-400: 214 184 90;
+  --brand-500: 194 160 60;
+  --brand-600: 183 143 46;
+  --brand-700: 138 106 23;
+  --brand-800: 107 80 17;
+  --brand-900: 74 55 12;
+  --brand-950: 23 18 12;
+  --accent-50: 239 246 255;
+  --accent-100: 219 234 254;
+  --accent-200: 191 219 254;
+  --accent-300: 147 197 253;
+  --accent-400: 96 165 250;
+  --accent-500: 59 130 246;
+  --accent-600: 37 99 235;
+  --accent-700: 29 78 216;
+  --accent-800: 30 64 175;
+  --accent-900: 30 58 138;
+  --gray-50: 250 247 240;
+  --gray-100: 243 238 227;
+  --gray-200: 230 223 208;
+  --gray-300: 211 202 182;
+  --gray-400: 163 154 135;
+  --gray-500: 125 116 99;
+  --gray-600: 95 87 72;
+  --gray-700: 70 63 51;
+  --gray-800: 46 41 34;
+  --gray-900: 26 22 18;
+  --gray-950: 15 12 9;
+  --amber-50: 255 251 235;
+  --amber-100: 254 243 199;
+  --amber-200: 253 230 138;
+  --amber-700: 180 83 9;
+  --amber-800: 146 64 14;
+  --red-50: 254 242 242;
+  --red-100: 254 226 226;
+  --red-200: 254 202 202;
+  --red-700: 185 28 28;
+  --red-800: 153 27 27;
+  --surface: 255 255 255;
+  --page: 250 246 238;
+}
+
+.theme-dark {
+  --brand-50: 30 24 16;
+  --brand-100: 42 32 19;
+  --brand-200: 90 69 32;
+  --brand-300: 230 212 154;
+  --brand-400: 217 188 98;
+  --brand-500: 201 164 63;
+  --brand-600: 212 175 55;
+  --brand-700: 228 197 100;
+  --brand-800: 239 217 143;
+  --brand-900: 246 232 184;
+  --brand-950: 12 9 6;
+  --accent-50: 15 26 43;
+  --accent-100: 20 35 58;
+  --accent-200: 31 58 99;
+  --accent-300: 143 186 255;
+  --accent-400: 106 163 255;
+  --accent-500: 74 139 245;
+  --accent-600: 59 123 224;
+  --accent-700: 143 186 255;
+  --accent-800: 169 203 255;
+  --accent-900: 198 220 255;
+  --gray-50: 21 17 13;
+  --gray-100: 28 23 17;
+  --gray-200: 46 38 25;
+  --gray-300: 64 54 42;
+  --gray-400: 139 128 109;
+  --gray-500: 168 157 137;
+  --gray-600: 194 184 164;
+  --gray-700: 216 207 188;
+  --gray-800: 235 228 211;
+  --gray-900: 247 242 231;
+  --gray-950: 251 248 241;
+  --amber-50: 42 31 10;
+  --amber-100: 58 42 12;
+  --amber-200: 92 66 16;
+  --amber-700: 240 194 92;
+  --amber-800: 246 213 138;
+  --red-50: 43 17 17;
+  --red-100: 58 22 22;
+  --red-200: 92 32 32;
+  --red-700: 252 165 165;
+  --red-800: 254 202 202;
+  --surface: 23 19 16;
+  --page: 14 11 8;
+}
+
 html {
   scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+.theme-dark {
+  color-scheme: dark;
 }
 
 body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  background-color: #0e0b08;
+  background-color: rgb(var(--page));
   color: theme("colors.gray.800");
 }
 
-/* Dark UI: render native controls (scrollbars, date pickers) in dark mode. */
-html {
-  color-scheme: dark;
+/* Elegant serif headings across the storefront */
+h1,
+h2 {
+  font-family: theme("fontFamily.display");
+  letter-spacing: 0.005em;
 }
 
 /* Visible focus ring for keyboard navigation (accessibility) */
@@ -24,21 +126,26 @@ html {
   outline-offset: 2px;
 }
 
+::selection {
+  background: rgb(var(--brand-200));
+  color: #14110e;
+}
+
 @layer components {
   .container-page {
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition-colors duration-150 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-200 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .btn-primary {
-    @apply btn bg-brand-600 text-ink hover:bg-brand-500;
+    @apply btn bg-gradient-to-b from-brand-500 to-brand-600 text-ink shadow-sm hover:from-brand-400 hover:to-brand-500 hover:shadow-md;
   }
 
   .btn-secondary {
-    @apply btn bg-transparent text-brand-700 ring-1 ring-inset ring-brand-600/50 hover:bg-brand-50;
+    @apply btn bg-transparent text-brand-800 ring-1 ring-inset ring-brand-600/50 hover:bg-brand-50 hover:ring-brand-600;
   }
 
   .btn-whatsapp {
@@ -46,7 +153,7 @@ html {
   }
 
   .card {
-    @apply rounded-2xl bg-surface shadow-card ring-1 ring-white/10;
+    @apply rounded-2xl bg-surface shadow-card ring-1 ring-brand-200/40;
   }
 
   .input {
@@ -60,6 +167,27 @@ html {
   .badge {
     @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold;
   }
+
+  /* Small gold eyebrow text above section headings */
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.22em] text-brand-700;
+  }
+
+  /* Thin gold rule with a diamond, used under section titles */
+  .gold-rule {
+    @apply mx-auto h-px w-24 bg-gradient-to-r from-transparent via-brand-500 to-transparent;
+  }
+}
+
+/* The admin portal keeps its dark look. */
+.theme-dark .card {
+  --tw-ring-color: rgb(255 255 255 / 0.1);
+}
+.theme-dark .btn-primary {
+  @apply bg-brand-600 bg-none text-ink hover:bg-brand-500;
+}
+.theme-dark .btn-secondary {
+  @apply text-brand-700;
 }
 
 /* Line clamp utility fallback (avoids needing @tailwindcss/line-clamp) */

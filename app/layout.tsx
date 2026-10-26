@@ -65,7 +65,16 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className="flex min-h-screen flex-col bg-surface font-sans text-gray-900">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        />
+      </head>
+      <body className="flex min-h-screen flex-col bg-page font-sans text-gray-900">
         <Providers products={products} categories={categories}>
           <SiteChrome
             header={<Navbar />}

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart, MessageCircle, Phone, Heart, Package, ZoomIn, Truck } from "lucide-react";
+import { ShoppingCart, MessageCircle, Phone, Heart, Package, ZoomIn, Truck, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Category, Product } from "@/types";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ProductGrid from "@/components/ProductGrid";
@@ -13,8 +13,15 @@ import { formatPrice, isOnSale, calculateDiscountPercent } from "@/lib/utils";
 import { useCart } from "@/lib/cart-context";
 import { useToast } from "@/lib/toast-context";
 import { useWishlist } from "@/lib/wishlist-context";
+import { useCatalog } from "@/lib/catalog-context";
 import { buildTelUrl, buildWhatsAppContactUrl } from "@/lib/whatsapp";
 import { businessConfig } from "@/config/business";
+
+/** Sort key for article numbers like WGA-08d: number first, then the colour letter. */
+function articleOrder(sku: string): [number, string] {
+  const m = /^WGA-(\d+)([a-z]*)$/i.exec(sku ?? "");
+  return m ? [Number(m[1]), m[2].toLowerCase()] : [Number.MAX_SAFE_INTEGER, sku ?? ""];
+}
 
 interface ProductDetailClientProps {
   product: Product;
@@ -38,6 +45,27 @@ export default function ProductDetailClient({
   const heading = hasColours ? product.groupName ?? product.name : product.name;
   const { addToCart } = useCart();
   const { showToast } = useToast();
+  const { products: catalog } = useCatalog();
+
+  // Every article in article-number order, so the arrows under the photo step to the previous / next one.
+  const articles = useMemo(
+    () =>
+      [...catalog]
+        .filter((p) => p.sku)
+        .sort((a, b) => {
+          const [an, as] = articleOrder(a.sku);
+          const [bn, bs] = articleOrder(b.sku);
+          return an - bn || as.localeCompare(bs);
+        }),
+    [catalog]
+  );
+  const articleIndex = articles.findIndex((p) => p.id === product.id);
+  const prevArticle =
+    articles.length > 1 && articleIndex >= 0
+      ? articles[(articleIndex - 1 + articles.length) % articles.length]
+      : undefined;
+  const nextArticle =
+    articles.length > 1 && articleIndex >= 0 ? articles[(articleIndex + 1) % articles.length] : undefined;
   const { isWishlisted, toggleWishlist } = useWishlist();
 
   const onSale = isOnSale(product.price, product.salePrice);
@@ -57,7 +85,7 @@ export default function ProductDetailClient({
           ...(category
             ? [{ label: category.name, href: `/shop?category=${category.slug}` }]
             : []),
-          { label: product.name },
+          { label: hasColours ? `${heading} (${product.sku})` : product.name },
         ]}
       />
 
@@ -74,7 +102,7 @@ export default function ProductDetailClient({
                 setZoomOpen(true);
               }
             }}
-            className="relative aspect-square w-full cursor-zoom-in overflow-hidden rounded-2xl bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
+            className="relative aspect-square w-full cursor-zoom-in overflow-hidden rounded-2xl bg-brand-50 shadow-card ring-1 ring-brand-300/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600"
           >
             <Image
               key={photos[activePhoto]}
@@ -87,14 +115,14 @@ export default function ProductDetailClient({
             />
             <div className="absolute left-3 top-3 flex flex-col gap-1.5">
               {onSale && <span className="badge bg-red-600 text-white">-{discount}%</span>}
-              {product.isDemo && <span className="badge bg-black/70 text-white">Demo Product</span>}
+              {product.isDemo && <span className="badge bg-gray-900/80 text-white">Demo Product</span>}
             </div>
             {product.sku && (
-              <span className="absolute bottom-3 left-3 rounded bg-black/80 px-3 py-1.5 text-sm font-bold tracking-wider text-white shadow-md ring-1 ring-white/30">
+              <span className="absolute bottom-3 left-3 rounded-full bg-white/90 px-4 py-1.5 text-sm font-semibold tracking-[0.14em] text-gray-900 shadow-sm ring-1 ring-brand-300/60 backdrop-blur">
                 {product.sku}
               </span>
             )}
-            <span className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-full bg-black/70 px-2.5 py-1 text-xs font-medium text-white">
+            <span className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-gray-800 shadow-sm ring-1 ring-brand-300/50 backdrop-blur">
               <ZoomIn className="h-3.5 w-3.5" aria-hidden="true" />
               Click to zoom
             </span>
@@ -107,6 +135,39 @@ export default function ProductDetailClient({
               alt={product.name}
               onClose={() => setZoomOpen(false)}
             />
+          )}
+
+          {prevArticle && nextArticle && (
+            <nav
+              aria-label="Browse articles"
+              className="mt-4 flex items-center justify-between gap-2 rounded-full bg-surface px-2 py-2 shadow-card ring-1 ring-brand-300/50"
+            >
+              <Link
+                href={`/products/${prevArticle.slug}`}
+                scroll={false}
+                aria-label={`Previous article, ${prevArticle.sku}`}
+                className="group flex items-center gap-1 rounded-full py-2 pl-2 pr-4 text-sm font-semibold tracking-wide text-gray-800 transition-colors hover:bg-brand-50 hover:text-brand-800"
+              >
+                <ChevronLeft className="h-5 w-5 text-brand-700 transition-transform group-hover:-translate-x-0.5" aria-hidden="true" />
+                <span className="hidden sm:inline">{prevArticle.sku}</span>
+                <span className="sm:hidden">Prev</span>
+              </Link>
+              <span className="text-center text-xs uppercase tracking-[0.2em] text-gray-500">
+                <span className="font-semibold text-gray-900">{product.sku}</span>
+                <span className="mx-2 text-brand-500">&middot;</span>
+                {articleIndex + 1} of {articles.length}
+              </span>
+              <Link
+                href={`/products/${nextArticle.slug}`}
+                scroll={false}
+                aria-label={`Next article, ${nextArticle.sku}`}
+                className="group flex items-center gap-1 rounded-full py-2 pl-4 pr-2 text-sm font-semibold tracking-wide text-gray-800 transition-colors hover:bg-brand-50 hover:text-brand-800"
+              >
+                <span className="hidden sm:inline">{nextArticle.sku}</span>
+                <span className="sm:hidden">Next</span>
+                <ChevronRight className="h-5 w-5 text-brand-700 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </Link>
+            </nav>
           )}
 
           {photos.length > 1 && (
@@ -133,13 +194,13 @@ export default function ProductDetailClient({
           {category && (
             <Link
               href={`/shop?category=${category.slug}`}
-              className="w-fit text-xs font-semibold uppercase tracking-wide text-brand-600 hover:underline"
+              className="eyebrow w-fit hover:underline"
             >
               {category.name}
             </Link>
           )}
 
-          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">{heading}</h1>
+          <h1 className="text-4xl font-semibold leading-tight text-gray-900 sm:text-5xl">{heading}</h1>
 
           {hasColours && (
             <div>
@@ -184,7 +245,7 @@ export default function ProductDetailClient({
           <div className="flex items-center gap-3">
             {onSale ? (
               <>
-                <span className="text-3xl font-bold text-brand-800">
+                <span className="font-display text-4xl font-semibold text-brand-800">
                   {formatPrice(product.salePrice as number)}
                 </span>
                 <span className="text-lg text-gray-400 line-through">
@@ -192,7 +253,7 @@ export default function ProductDetailClient({
                 </span>
               </>
             ) : (
-              <span className="text-3xl font-bold text-brand-800">
+              <span className="font-display text-4xl font-semibold text-brand-800">
                 {formatPrice(product.price)}
               </span>
             )}
@@ -207,7 +268,7 @@ export default function ProductDetailClient({
           </div>
 
           {product.freeDelivery && (
-            <p className="inline-flex w-fit items-center gap-2 rounded-lg bg-green-500/10 px-3 py-2 text-sm font-medium text-green-500">
+            <p className="inline-flex w-fit items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800 ring-1 ring-emerald-200">
               <Truck className="h-4 w-4" aria-hidden="true" />
               Free delivery and a free gift box included
             </p>
@@ -290,10 +351,12 @@ export default function ProductDetailClient({
       </div>
 
       {relatedProducts.length > 0 && (
-        <section className="mt-16">
-          <h2 className="mb-6 text-xl font-bold text-gray-900 sm:text-2xl">
-            Related Products
-          </h2>
+        <section className="mt-20">
+          <div className="mb-10 text-center">
+            <span className="eyebrow">You may also like</span>
+            <h2 className="mt-2 text-3xl font-semibold text-gray-900 sm:text-4xl">Related watches</h2>
+            <div className="gold-rule mt-4" />
+          </div>
           <ProductGrid products={relatedProducts} />
         </section>
       )}

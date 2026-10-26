@@ -86,18 +86,18 @@ export default function ShopClient() {
     <div className="container-page pb-16">
       <Breadcrumbs items={[{ label: "Shop" }]} />
 
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Shop</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            {query
-              ? `Showing results for "${query}"`
-              : "Browse our full range of watches."}
-          </p>
-        </div>
+      <div className="mb-8 text-center">
+        <span className="eyebrow">The collection</span>
+        <h1 className="mt-2 text-4xl font-semibold text-gray-900 sm:text-5xl">Shop</h1>
+        <div className="gold-rule mt-4" />
+        <p className="mt-4 text-sm text-gray-500">
+          {query
+            ? `Showing results for "${query}"`
+            : "Browse our full range of watches."}
+        </p>
       </div>
 
-      <div className="mb-6 sm:max-w-md">
+      <div className="mx-auto mb-8 sm:max-w-md">
         <SearchBar />
       </div>
 
@@ -152,7 +152,7 @@ export default function ShopClient() {
       {mobileFiltersOpen && (
         <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Filters">
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-gray-900/50"
             onClick={() => setMobileFiltersOpen(false)}
             aria-hidden="true"
           />

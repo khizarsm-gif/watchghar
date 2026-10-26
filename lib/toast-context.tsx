@@ -41,10 +41,10 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className="flex items-center gap-2 rounded-xl bg-brand-900 px-4 py-3 text-sm font-medium text-ink shadow-card-hover"
+            className="flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-3 text-sm font-medium text-white shadow-card-hover"
           >
             {toast.type === "success" ? (
-              <CheckCircle2 className="h-5 w-5 shrink-0 text-brand-300" aria-hidden="true" />
+              <CheckCircle2 className="h-5 w-5 shrink-0 text-brand-400" aria-hidden="true" />
             ) : (
               <Info className="h-5 w-5 shrink-0 text-accent-300" aria-hidden="true" />
             )}
