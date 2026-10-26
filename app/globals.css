@@ -148,6 +148,10 @@ h2 {
     @apply btn bg-transparent text-brand-800 ring-1 ring-inset ring-brand-600/50 hover:bg-brand-50 hover:ring-brand-600;
   }
 
+  .btn-dark {
+    @apply btn bg-forest-900 text-white shadow-sm hover:bg-forest-700 hover:shadow-md;
+  }
+
   .btn-whatsapp {
     @apply btn bg-[#25D366] text-white hover:bg-[#1ebc59];
   }

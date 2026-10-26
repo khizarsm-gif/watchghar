@@ -63,6 +63,14 @@ const config: Config = {
         700: "rgb(var(--red-700) / <alpha-value>)",
         800: "rgb(var(--red-800) / <alpha-value>)",
       },
+        // Deep forest green used for the header, footer and dark panels.
+        forest: {
+          600: "#1c4a3e",
+          700: "#14382f",
+          800: "#0f2d26",
+          900: "#0b2420",
+          950: "#07191a",
+        },
         surface: "rgb(var(--surface) / <alpha-value>)",
         page: "rgb(var(--page) / <alpha-value>)",
         ink: "#14110e",

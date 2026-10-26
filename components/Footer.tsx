@@ -8,7 +8,7 @@ export default function Footer({ categories }: { categories: Category[] }) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-8 border-t-2 border-brand-600 bg-brand-950 text-brand-300">
+    <footer className="mt-8 border-t-2 border-brand-600 bg-forest-900 text-brand-300">
       <div className="container-page grid grid-cols-1 gap-10 py-12 sm:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col gap-3">
           <Link href="/" className="flex items-center gap-2">

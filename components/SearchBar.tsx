@@ -12,6 +12,8 @@ interface SearchBarProps {
   className?: string;
   autoFocus?: boolean;
   onNavigate?: () => void;
+  /** "dark" renders the input for use on the dark green header. */
+  tone?: "light" | "dark";
 }
 
 /**
@@ -19,7 +21,7 @@ interface SearchBarProps {
  * (filtered in memory from the catalog context). Shows a live dropdown of up to 5
  * matches and submits to /shop?q=... for the full results page.
  */
-export default function SearchBar({ className, autoFocus, onNavigate }: SearchBarProps) {
+export default function SearchBar({ className, autoFocus, onNavigate, tone = "light" }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const router = useRouter();
@@ -60,7 +62,7 @@ export default function SearchBar({ className, autoFocus, onNavigate }: SearchBa
         className="relative"
       >
         <Search
-          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+          className={classNames("pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2", tone === "dark" ? "text-brand-300" : "text-gray-400")}
           aria-hidden="true"
         />
         <label htmlFor="product-search" className="sr-only">
@@ -74,7 +76,11 @@ export default function SearchBar({ className, autoFocus, onNavigate }: SearchBa
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsFocused(true)}
           placeholder="Search watches, brands, categories…"
-          className="input pl-9 pr-9"
+          className={
+            tone === "dark"
+              ? "w-full rounded-full border border-brand-600/40 bg-white/5 py-2.5 pl-10 pr-9 text-sm text-white placeholder:text-brand-300/70 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
+              : "input pl-9 pr-9"
+          }
         />
         {query && (
           <button

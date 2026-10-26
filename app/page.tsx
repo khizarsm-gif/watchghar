@@ -34,8 +34,14 @@ export default async function HomePage() {
   const { allProducts, categories } = await loadHomeData();
   const featuredProducts = allProducts.filter((p) => p.featured);
   const hasDemoProducts = featuredProducts.some((p) => p.isDemo);
-  const countByCategory = collapseVariants(allProducts).reduce<Record<string, number>>((acc, p) => {
+  const collapsed = collapseVariants(allProducts);
+  const countByCategory = collapsed.reduce<Record<string, number>>((acc, p) => {
     acc[p.category] = (acc[p.category] ?? 0) + 1;
+    return acc;
+  }, {});
+  // One photo per category: the first watch in it.
+  const imageByCategory = collapsed.reduce<Record<string, string>>((acc, p) => {
+    if (!acc[p.category]) acc[p.category] = p.image;
     return acc;
   }, {});
 
@@ -53,12 +59,13 @@ export default async function HomePage() {
             Find the watch that suits your wrist and your style.
           </p>
         </div>
-        <div className="flex flex-wrap justify-center gap-3 sm:gap-6 [&>*]:w-[calc(50%-0.375rem)] md:[&>*]:w-56 lg:[&>*]:w-64">
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-6 [&>*]:w-full sm:[&>*]:w-[calc(50%-0.75rem)] lg:[&>*]:w-[26rem]">
           {categories.map((category) => (
             <CategoryCard
               key={category.slug}
               category={category}
               count={countByCategory[category.slug] ?? 0}
+              image={imageByCategory[category.slug]}
             />
           ))}
         </div>
@@ -90,7 +97,7 @@ export default async function HomePage() {
       </section>
 
       <section className="container-page py-14 sm:py-16">
-        <div className="flex flex-col items-center gap-4 rounded-3xl bg-brand-950 p-10 text-center shadow-card-hover ring-1 ring-brand-600/40 sm:p-14">
+        <div className="flex flex-col items-center gap-4 rounded-3xl bg-forest-900 p-10 text-center shadow-card-hover ring-1 ring-brand-600/40 sm:p-14">
           <span className="eyebrow !text-brand-400">Personal service</span>
           <h2 className="text-3xl font-semibold text-white sm:text-5xl">
             Need help choosing the right watch?

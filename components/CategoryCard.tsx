@@ -1,23 +1,44 @@
 import Link from "next/link";
+import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 import type { Category } from "@/types";
-import { getCategoryIcon } from "@/lib/category-icons";
 
-export default function CategoryCard({ category, count }: { category: Category; count: number }) {
-  const Icon = getCategoryIcon(category.icon);
-
+export default function CategoryCard({
+  category,
+  count,
+  image,
+}: {
+  category: Category;
+  count: number;
+  /** Photo of one watch from this category. */
+  image?: string;
+}) {
   return (
     <Link
       href={`/shop?category=${category.slug}`}
-      className="group flex flex-col items-center gap-3 rounded-2xl bg-surface p-6 text-center shadow-card ring-1 ring-brand-200/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover hover:ring-brand-400/60 sm:p-8"
+      className="group flex h-44 overflow-hidden rounded-2xl bg-forest-900 shadow-card ring-1 ring-brand-600/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover hover:ring-brand-400/70 sm:h-52"
     >
-      <span className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-50 text-brand-700 ring-1 ring-brand-300/60 transition-colors group-hover:bg-brand-600 group-hover:text-white">
-        <Icon className="h-7 w-7" aria-hidden="true" />
+      <span className="relative w-1/2 overflow-hidden bg-forest-800">
+        {image && (
+          <Image
+            src={image}
+            alt=""
+            fill
+            sizes="(max-width: 640px) 45vw, 20vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        )}
       </span>
-      <span className="font-display text-xl font-semibold text-gray-900 sm:text-2xl">
-        {category.name}
-      </span>
-      <span className="text-xs uppercase tracking-[0.18em] text-gray-500">
-        {count} {count === 1 ? "design" : "designs"}
+      <span className="flex w-1/2 flex-col items-start justify-center gap-2 p-4 sm:p-5">
+        <span className="font-display text-xl font-semibold leading-tight text-white sm:text-2xl">
+          {category.name}
+        </span>
+        <span className="text-[11px] uppercase tracking-[0.18em] text-brand-300">
+          {count} {count === 1 ? "design" : "designs"}
+        </span>
+        <span className="mt-1 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-widest text-brand-400 transition-all group-hover:gap-2">
+          Explore <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+        </span>
       </span>
     </Link>
   );
